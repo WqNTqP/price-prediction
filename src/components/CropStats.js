@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { getPrediction } from '../services/api'; // Import the prediction function
-import PriceComparisonGraph from './PriceComparisonGraph'; // Import the graph component
-import '../CropStats.css'; // Import the CSS file for styling
+import { getPrediction } from '../services/api';
+import PriceComparisonGraph from './PriceComparisonGraph';
+import '../CropStats.css';
 
 const CropStats = () => {
   const [lastPrices, setLastPrices] = useState([]);
@@ -14,13 +14,11 @@ const CropStats = () => {
   useEffect(() => {
     const fetchCropStats = async () => {
       try {
-        // Fetch last 4 weeks prices
         const response = await axios.get(`http://localhost:5000/crop-stats?crop=${crop}`);
         setLastPrices(response.data);
 
-        // Fetch predicted prices for the next 4 weeks
         const today = new Date();
-        const weekNumber = Math.ceil((today - new Date(today.getFullYear(), 0, 1)) / 604800000); // Calculate current week number
+        const weekNumber = Math.ceil((today - new Date(today.getFullYear(), 0, 1)) / 604800000);
         const prediction = await getPrediction(crop, weekNumber);
         setPredictedPrices(prediction);
       } catch (err) {
@@ -37,48 +35,60 @@ const CropStats = () => {
     return <div>Error: {error}</div>;
   }
 
+  // Limit lastPrices to last 4 entries
+  const lastFourPrices = lastPrices.slice(-4);
+
   return (
-    <div className="crop-stats-container">
-      {/* Crop Statistics Heading */}
-      <div className="crop-stats-heading">
-        <h2>Crop Statistics for {crop}</h2>
-      </div>
+    <div className="crop-stats-page">
+      <main className="crop-stats-container">
+        <div className="crop-stats-heading">
+          <h2>Crop Statistics for {crop}</h2>
+        </div>
 
-      {/* Left Column for Last 4 Weeks Prices and Graph */}
-      <div className="price-graph-container">
-        <div className="crop-card">
-          <h3>Last 4 Weeks Prices</h3>
-          <ul>
-            {lastPrices.map((stat, index) => (
-              <li key={index}>
-                Date: {new Date(stat.Date).toLocaleDateString()} - Retail Price: {stat.Retail}
-              </li>
-            ))}
-          </ul>
-        </div>
-        {/* Graph for Last 4 Weeks Prices (separate card below) */}
-        <div className="crop-card">
-          <PriceComparisonGraph lastPrices={lastPrices} predictedPrices={predictedPrices} />
-        </div>
-      </div>
+        <div className="stats-layout">
+          <div className="last-prices">
+            <h3>Last 4 Weeks Prices</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Retail Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lastFourPrices.map((stat, index) => (
+                  <tr key={index}>
+                    <td>{new Date(stat.Date).toLocaleDateString()}</td>
+                    <td>₱{stat.Retail}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-      {/* Right Column for Predicted Prices and Graph */}
-      <div className="price-graph-container">
-        <div className="crop-card">
-          <h3>Predicted Prices for Next 4 Weeks</h3>
-          <ul>
-            {predictedPrices.map((prediction, index) => (
-              <li key={index}>
-                Week {prediction.week}: Predicted Retail Price = {prediction.retail_prediction}
-              </li>
-            ))}
-          </ul>
+            <h3>Predicted Prices for Next 4 Weeks</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Week</th>
+                  <th>Predicted Retail Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {predictedPrices.map((prediction, index) => (
+                  <tr key={index}>
+                    <td>Week {prediction.week}</td>
+                    <td>₱{parseFloat(prediction.retail_prediction).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="price-graph">
+            <PriceComparisonGraph lastPrices={lastPrices} predictedPrices={predictedPrices} />
+          </div>
         </div>
-        {/* Graph for Predicted Prices (separate card below) */}
-        <div className="crop-card">
-          <PriceComparisonGraph lastPrices={lastPrices} predictedPrices={predictedPrices} />
-        </div>
-      </div>
+      </main>
     </div>
   );
 };

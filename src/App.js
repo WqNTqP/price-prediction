@@ -1,12 +1,13 @@
 // src/App.js
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import PredictionForm from "./components/PredictionForm";
 import PredictionResults from "./components/PredictionResults";
 import Dashboard from "./components/Dashboard";
-import Sidebar from "./components/Sidebar";
 import CropStats from "./components/CropStats"; // Import the new CropStats component
 import { getPrediction } from "./services/api";
+import background from './assets/background.jpg';
+import './components/Navbar.css';
 
 function App() {
   const [results, setResults] = useState(null);
@@ -36,40 +37,57 @@ function App() {
 
   return (
     <Router>
-      <div className="container">
-        <header>
-          <h1>Price Prediction Web</h1>
-        </header>
-        <Sidebar />
+      <div
+        className="container App"
+        style={{
+          backgroundImage: `url(${background})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          minHeight: "100vh",
+          color: "#333",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <nav className="navbar">
+          <div className="navbar-brand">Price Prediction Web</div>
+          <ul className="navbar-links">
+            <li><Link to="/">Dashboard</Link></li>
+            <li><Link to="/prediction">Prediction</Link></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </nav>
         <main className="flex-container">
           <Routes>
-            <Route path="/" element={
-              <div className="column">
-                <Dashboard /> {/* Set Dashboard as the default component */}
-              </div>
-            } />
-            <Route path="/prediction" element={
-              <div className="column">
-                <PredictionForm onSubmit={handlePrediction} />
-                {results && (
-                  <PredictionResults
-                    results={results}
-                    crop={selectedCrop}
-                    date={selectedDate}
-                  />
-                )}
-              </div>
-            } />
-            <Route path="/crop-stats" element={<CropStats />} /> {/* Add route for CropStats */}
+            <Route
+              path="/"
+              element={
+                <div className="column">
+                  <Dashboard /> {/* Set Dashboard as the default component */}
+                </div>
+              }
+            />
+            <Route
+              path="/prediction"
+              element={
+                <div className="column">
+                  <PredictionForm onSubmit={handlePrediction} />
+                  {results && (
+                    <PredictionResults
+                      results={results}
+                      crop={selectedCrop}
+                      date={selectedDate}
+                    />
+                  )}
+                </div>
+              }
+            />
+            <Route path="/crop-stats" element={<CropStats />} />{" "}
+            {/* Add route for CropStats */}
           </Routes>
         </main>
-        <footer>
-          <p>&copy; 2024 Price Prediction Web. All rights reserved.</p>
-          <p>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <a href="#privacy">Privacy Policy</a>
-          </p>
+        <footer className="app-footer">
+          <p>© 2025 Price Prediction Web. All rights reserved.</p>
         </footer>
       </div>
     </Router>

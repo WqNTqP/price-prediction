@@ -1,38 +1,148 @@
 /* Prediction.css */
 
-/* Prediction Form */
+/* Apply background to the entire prediction tab */
+.prediction-tab {
+    background-image: url('./assets/bgPredict.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    padding: 40px 30px;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* Main container for the prediction form */
 .prediction-form {
-    padding: 20px;
-    background-color: #f4f4f4; /* Light background for better visibility */
-  }
-  
-  /* Form Elements */
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  form input,
-  form select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+    background-color: rgba(249, 249, 249, 0.95);
+    padding: 40px 35px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    margin: 40px auto;
+    max-width: 900px;
+}
+
+/* Use grid layout for form elements */
+.prediction-form form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 200px;
+    gap: 25px;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+/* Style for form labels */
+.prediction-form label {
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: block;
+    color: #444;
+    font-size: 18px;
+}
+
+/* Style for select and input elements */
+.prediction-form select,
+.prediction-form input {
     width: 100%;
-  }
-  
-  /* Button Styles */
-  .button {
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 0;
+    transition: border-color 0.3s ease;
+    background-color: #fff;
+}
+
+/* Focus effect for inputs and selects */
+.prediction-form select:focus,
+.prediction-form input:focus {
+    border-color: #61dafb;
+    outline: none;
+}
+
+/* Style for the submit button */
+.prediction-form button {
     background-color: #61dafb;
     color: white;
     border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
+    border-radius: 8px;
+    padding: 14px 28px;
     cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .button:hover {
+    transition: background-color 0.3s, transform 0.2s;
+    font-size: 16px;
+    display: block;
+    width: fit-content;
+    justify-self: center;
+    box-shadow: 0 6px 15px rgba(97, 218, 251, 0.6);
+}
+
+.prediction-form button:hover,
+.prediction-form button:focus {
     background-color: #21a1f1;
-  }
+    transform: translateY(-3px);
+    outline: none;
+}
+
+/* Style for error messages */
+.error-message {
+    color: #d32f2f;
+    margin-top: 20px;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* Prediction results section */
+.prediction-results {
+    margin: 40px auto;
+    max-width: 900px;
+    padding: 30px 25px;
+    background-color: rgba(240, 240, 240, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    font-size: 1.2rem;
+}
+
+th, td {
+    padding: 16px 14px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #61dafb;
+    color: white;
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}
+
+.separator-row td {
+    border-top: 1px solid #ddd;
+    height: 0;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .prediction-form form {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .prediction-form button {
+        justify-self: stretch;
+        width: 100%;
+    }
+}

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
+import '../Prediction.css'; // Import the CSS file
 
 // Register the components you are using
 ChartJS.register(
-  CategoryScale,  // CategoryScale for x-axis
-  LinearScale,    // LinearScale for y-axis
+  CategoryScale,
+  LinearScale,
   PointElement,
   LineElement,
   Title,
@@ -17,13 +17,12 @@ const PriceGraph = ({ data }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    if (chartRef.current) {
-      // Destroy any existing chart before rendering a new one
-      if (chartRef.current.chart) {
+    return () => {
+      if (chartRef.current && chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
-    }
-  }, [data]); // Re-run the effect when 'data' changes
+    };
+  }, [data]);
 
   const weeks = data.map(item => `Week ${item.week}`);
   const prices = data.map(item => parseFloat(item.retail_prediction));
@@ -43,10 +42,44 @@ const PriceGraph = ({ data }) => {
     ],
   };
 
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+      },
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            return `₱${tooltipItem.raw.toFixed(2)}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Weeks',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Price (₱)',
+        },
+        beginAtZero: true,
+      },
+    },
+  };
+
   return (
-    <div>
+    <div className="price-graph-container">
       <h3>Price Trend</h3>
-      <Line ref={chartRef} data={chartData} />
+      {/* Comment out or remove the Line component to hide the graph */}
+      {/* <Line ref={chartRef} data={chartData} options={chartOptions} /> */}
     </div>
   );
 };

@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy  # type: ignore
-from sqlalchemy import text  # type: ignore  # Import the text function
 import joblib
 import pandas as pd
 import os
@@ -13,8 +12,8 @@ CORS(app)
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:emping@localhost:5432/price_prediction'
+# Database configuration - Use SQLite instead of PostgreSQL
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///price_prediction.db'  # SQLite database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -64,7 +63,7 @@ def home():
 
 # Load the CSV file (ensure the path is correct)
 try:
-    data = pd.read_csv('data/Crop_IPT.csv', parse_dates=['Date'])  # Ensure 'Date' is parsed as datetime
+    data = pd.read_csv('data/Crop_HCI.csv', parse_dates=['Date'])  # Ensure 'Date' is parsed as datetime
     logging.info("CSV file loaded successfully.")
 except Exception as e:
     logging.error(f"Error loading CSV file: {e}")
@@ -86,15 +85,6 @@ def crop_stats():
     result = last_week_data[['Date', 'Retail']].to_dict(orient='records')
 
     return jsonify(result)
-
-@app.route('/test_db', methods=['GET'])
-def test_db_connection():
-    try:
-        # Attempt a simple query to check the connection
-        db.session.execute(text('SELECT 1'))  # Use text() to declare the SQL expression
-        return jsonify({"message": "Database connection is successful!"}), 200
-    except Exception as e:
-        return jsonify({"error": f"Database connection failed: {str(e)}"}), 500
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -154,5 +144,6 @@ def predict():
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
-    db.create_all()  # Create database tables if they don't exist
+    with app.app_context():  # Ensure app context is active
+        db.create_all()  # Create database tables if they don't exist
     app.run(debug=True)

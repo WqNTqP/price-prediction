@@ -1,13 +1,19 @@
-import React, { useState } from "react";
-import PriceGraph from './PriceGraph'; // Ensure the PriceGraph component handles multiple weeks
+import React, { useState, useEffect } from "react";
 import '../Prediction.css'; 
 
 const PredictionForm = ({ onSubmit }) => {
   const [commodity, setCommodity] = useState("Gabi"); // Default commodity
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(""); // State for date
   const [error, setError] = useState("");
   const [showGraph, setShowGraph] = useState(false); // State to manage graph visibility
   const [results, setResults] = useState(null); // Store prediction results
+
+  // Effect to set the default date to the current date in Manila timezone
+  useEffect(() => {
+    const manilaTime = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
+    const currentDate = new Date(manilaTime).toISOString().split("T")[0]; // Format to YYYY-MM-DD
+    setDate(currentDate); // Set the default date
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,35 +32,19 @@ const PredictionForm = ({ onSubmit }) => {
       console.log("Setting results:", prediction);
     });
   };
-  
 
-// Function to calculate week number and the start date of the week
-const getWeekInfo = (date) => {
-  const firstDayOfYear = new Date(date.getFullYear(), 0, 1); // January 1st of the year
-  const daysSinceYearStart = Math.floor((date - firstDayOfYear) / 86400000); // Days since Jan 1
-  const weekNumber = Math.ceil((daysSinceYearStart + firstDayOfYear.getDay() + 1) / 7); // Calculate week number
-
-  // Calculate the start date of the current week
-  const startOfWeek = new Date(date);
-  const dayOfWeek = startOfWeek.getDay(); // Day of the week (0 = Sunday, 6 = Saturday)
-  startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek + 1); // Adjust to Monday of the current week
-
-  return { weekNumber, startOfWeek };
-};
-
-
-  // Function to toggle graph visibility
-  const handleToggleGraph = () => {
-    setShowGraph((prev) => {
-      if (prev) {
-        setResults(null); // Clear results when hiding the graph
-      }
-      return !prev;
-    });
+  const getWeekInfo = (date) => {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const daysSinceYearStart = Math.floor((date - firstDayOfYear) / 86400000);
+    const weekNumber = Math.ceil((daysSinceYearStart + firstDayOfYear.getDay() + 1) / 7);
+    const startOfWeek = new Date(date);
+    const dayOfWeek = startOfWeek.getDay();
+    startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek + 1);
+    return { weekNumber, startOfWeek };
   };
 
   return (
-    <div>
+    <div className="prediction-form">
       <form onSubmit={handleSubmit}>
         <label>
           Select Crop:
@@ -65,26 +55,37 @@ const getWeekInfo = (date) => {
             <option value="Cassava">Cassava</option>
           </select>
         </label>
-        <br />
         <label>
           Select Date:
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         </label>
-        <br />
         <button type="submit">Predict Prices</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      
+      {error && <p className="error-message">{error}</p>}
+      
       {showGraph && results && (
-        <>
-          <PriceGraph data={results} /> {/* Pass the predictions to the graph */}
-          <ul>
-            {results.map((prediction) => (
-              <li key={prediction.week}>
-                Week {prediction.week}: Retail Price = {prediction.retail_prediction}
-              </li>
-            ))}
-          </ul>
-        </>
+        <div className="crop-card"> {/* Card container */}
+          <h3>Prediction Results for {commodity}</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Week</th>
+                <th>Starting Date</th>
+                <th>Retail Price Prediction</th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.map((prediction) => (
+                <tr key={prediction.week}>
+                  <td>Week {prediction.week}</td>
+                  <td>{new Date(prediction.startOfWeek).toLocaleDateString()}</td>
+                  <td>{prediction.retail_prediction}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
