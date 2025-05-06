@@ -35,8 +35,30 @@ const CropStats = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Limit lastPrices to last 4 entries
-  const lastFourPrices = lastPrices.slice(-4);
+  // Calculate start of the current week (Sunday)
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 (Sun) to 6 (Sat)
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - dayOfWeek);
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  // Filter lastPrices to only include dates from startOfWeek to today
+  const filteredPrices = lastPrices.filter(stat => {
+    const statDate = new Date(stat.Date);
+    return statDate >= startOfWeek && statDate <= today;
+  });
+
+  // Format dates for label
+  const formatDate = (date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    }).format(date);
+  };
+
+  const labelStartDate = formatDate(startOfWeek);
+  const labelEndDate = formatDate(today);
 
   return (
     <div className="crop-stats-page">
@@ -47,7 +69,7 @@ const CropStats = () => {
 
         <div className="stats-layout">
           <div className="last-prices">
-            <h3>Last 4 Weeks Prices</h3>
+            <h3>Prices for Week of {labelStartDate} to {labelEndDate}</h3>
             <table>
               <thead>
                 <tr>
@@ -56,7 +78,7 @@ const CropStats = () => {
                 </tr>
               </thead>
               <tbody>
-                {lastFourPrices.map((stat, index) => (
+                {filteredPrices.map((stat, index) => (
                   <tr key={index}>
                     <td>{new Date(stat.Date).toLocaleDateString()}</td>
                     <td>₱{stat.Retail}</td>
@@ -85,7 +107,7 @@ const CropStats = () => {
           </div>
 
           <div className="price-graph">
-            <PriceComparisonGraph lastPrices={lastPrices} predictedPrices={predictedPrices} />
+            <PriceComparisonGraph lastPrices={filteredPrices} predictedPrices={predictedPrices} />
           </div>
         </div>
       </main>

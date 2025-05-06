@@ -5,6 +5,7 @@ import PredictionForm from "./components/PredictionForm";
 import PredictionResults from "./components/PredictionResults";
 import Dashboard from "./components/Dashboard";
 import CropStats from "./components/CropStats"; // Import the new CropStats component
+import About from "./components/About";
 import { getPrediction } from "./services/api";
 import background from './assets/background.jpg';
 import './components/Navbar.css';
@@ -54,7 +55,7 @@ function App() {
           <ul className="navbar-links">
             <li><Link to="/">Dashboard</Link></li>
             <li><Link to="/prediction">Prediction</Link></li>
-            <li><a href="#about">About</a></li>
+            <li><Link to="/about">About</Link></li>
           </ul>
         </nav>
         <main className="flex-container">
@@ -84,6 +85,7 @@ function App() {
             />
             <Route path="/crop-stats" element={<CropStats />} />{" "}
             {/* Add route for CropStats */}
+            <Route path="/about" element={<About />} />
           </Routes>
         </main>
         <footer className="app-footer">

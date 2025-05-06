@@ -5,8 +5,9 @@ import cassavaImage from '../assets/cassava.png';
 import gabiImage from '../assets/Gabi.png';
 import kamoteImage from '../assets/kamote.png';
 import karlangImage from '../assets/karlang.png';
-import arrowUp from '../assets/arrowup.png';
-import arrowDown from '../assets/arrowdown.png';
+// Removed arrow image imports
+// import arrowUp from '../assets/arrowup.png';
+// import arrowDown from '../assets/arrowdown.png';
 import '../Dashboard.css';
 
 const crops = ['Gabi', 'Kamote', 'Karlang', 'Cassava'];
@@ -56,6 +57,32 @@ const Dashboard = () => {
     console.log(`Predicting prices for ${crop}`);
   };
 
+  const UpArrow = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      fill="green"
+      viewBox="0 0 24 24"
+      style={{ marginLeft: '8px' }}
+    >
+      <path d="M12 2l-8 8h6v8h4v-8h6z" />
+    </svg>
+  );
+
+  const DownArrow = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      fill="red"
+      viewBox="0 0 24 24"
+      style={{ marginLeft: '8px' }}
+    >
+      <path d="M12 22l8-8h-6v-8h-4v8h-6z" />
+    </svg>
+  );
+
   return (
     <div className="dashboard-container">
       <section className="dashboard-content">
@@ -84,9 +111,9 @@ const Dashboard = () => {
                 <p className={`price-change ${trend === 'up' ? 'up' : 'down'}`}>
                   Price Change:
                   {trend === 'up' ? (
-                    <img src={arrowUp} alt="Price Up" className="price-icon" />
+                    <UpArrow />
                   ) : (
-                    <img src={arrowDown} alt="Price Down" className="price-icon" />
+                    <DownArrow />
                   )}
                   ₱{Math.abs(priceChange)}
                 </p>

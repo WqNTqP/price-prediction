@@ -12,16 +12,6 @@ const PredictionResults = ({ results, crop, date }) => {
 
   return (
     <div className="prediction-results-page">
-      <header className="dashboard-header">
-        <h1>Price Prediction Web</h1>
-        <nav className="dashboard-nav">
-          <a href="/">Dashboard</a>
-          <a href="/prediction">Prediction</a>
-          <a href="/about">About</a>
-          <a href="/contact">Contact</a>
-          <a href="/privacy">Privacy Policy</a>
-        </nav>
-      </header>
 
       <main className="prediction-results">
         <h2>Prediction Results for {crop}</h2>
@@ -50,9 +40,6 @@ const PredictionResults = ({ results, crop, date }) => {
         </table>
       </main>
 
-      <footer className="dashboard-footer">
-        <p>© 2024 Price Prediction Web. All rights reserved.</p>
-      </footer>
     </div>
   );
 };

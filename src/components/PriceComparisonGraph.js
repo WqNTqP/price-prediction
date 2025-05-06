@@ -22,7 +22,7 @@ const LastPricesGraph = ({ lastPrices }) => {
     labels: labels,
     datasets: [
       {
-        label: 'Last 4 Weeks Prices',
+        label: 'Last 4 Days Prices',
         data: lastPricesData,
         borderColor: 'rgba(75,192,192,1)',
         backgroundColor: 'rgba(75,192,192,0.2)',
@@ -35,7 +35,7 @@ const LastPricesGraph = ({ lastPrices }) => {
 
   return (
     <div>
-      <h3>Last 4 Weeks Prices</h3>
+      <h3>Last 4 Days Prices</h3>
       <Line data={chartData} />
     </div>
   );
